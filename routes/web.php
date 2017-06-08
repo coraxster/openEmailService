@@ -20,6 +20,6 @@ $app->get('/', function () use ($app) {
 
 $app->group(['prefix' => 'v1', 'namespace' => 'v1'],  function ($app) {
 
-    $app->post('add', 'EmailController@add');
+    $app->post('send', 'EmailController@add');
 
 });
