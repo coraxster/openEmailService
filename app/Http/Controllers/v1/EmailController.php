@@ -44,4 +44,14 @@ class EmailController extends Controller
 
     }
 
+
+
+    public function getConfig()
+    {
+        return [
+            'config' => config()->all(),
+            'env' => getenv()
+        ];
+    }
+
 }

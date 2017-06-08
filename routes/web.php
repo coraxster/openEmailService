@@ -22,4 +22,6 @@ $app->group(['prefix' => 'v1', 'namespace' => 'v1'],  function ($app) {
 
     $app->post('send', 'EmailController@add');
 
+    $app->get('config', 'EmailController@getConfig');
+
 });
