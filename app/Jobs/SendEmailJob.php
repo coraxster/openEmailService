@@ -32,7 +32,7 @@ class SendEmailJob extends Job
         $title = $this->title;
 
         Mail::send('email.blank', ['body' => $this->body], function ($message) use ($from, $to, $title) {
-            $message->from([$from]);
+            $message->from($from);
             $message->to($to);
             $message->subject($title);
         });
