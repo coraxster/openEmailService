@@ -12,5 +12,14 @@
 */
 
 $app->get('/', function () use ($app) {
-    return $app->version();
+    return $app->version() . ' - email service';
+});
+
+
+
+
+$app->group(['prefix' => 'v1', 'namespace' => 'v1'],  function ($app) {
+
+    $app->post('add', 'EmailController@add');
+
 });
