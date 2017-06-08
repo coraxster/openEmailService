@@ -1,0 +1,93 @@
+version: "2"
+
+volumes:
+  appemailgatecodedv:
+    external: true
+    driver: 'rancher-nfs'
+
+services:
+
+  code:
+    image: registry.open-broker.ru/email_service/code
+    stdin_open: true
+    network_mode: none
+    entrypoint:
+      - ash
+    tty: true
+    volumes:
+      - appemailgatecodedv:/app
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.scheduler.global: true
+
+
+#
+#   Service container
+#
+  web:
+    image: registry.open-broker.ru/email_service/nginx
+    stdin_open: true
+    tty: true
+    volumes:
+      - appemailgatecodedv:/app
+    environment:
+     - NGINX_HOST=email-gate.open-broker.ru
+     - NGINX_PORT=80
+     - FPM_HOST=localhost
+     - FPM_PORT=9000
+    labels:
+      io.rancher.sidekicks: php
+      io.rancher.container.pull_image: always
+
+
+  php:
+    image: registry.open-broker.ru/email_service/php
+    stdin_open: true
+    tty: true
+    volumes:
+      - appemailgatecodedv:/app
+    network_mode: container:web
+    env_file:
+      - base.env
+    labels:
+      io.rancher.container.pull_image: always
+
+
+
+
+#
+#   Workspace container
+#
+  workspace:
+    image: registry.open-broker.ru/email_service/php
+    stdin_open: true
+    tty: true
+    volumes:
+      - appemailgatecodedv:/app
+    env_file:
+      - base.env
+    working_dir: /app
+    labels:
+      io.rancher.container.pull_image: always
+    command: sh
+
+
+
+
+#
+#   Sms sender worker
+#
+  worker-email-sender:
+    image: registry.open-broker.ru/email_service/php
+    stdin_open: true
+    tty: true
+    volumes:
+      - appemailgatecodedv:/app
+    env_file:
+      - base.env
+    working_dir: /app
+    restart: always
+    labels:
+      io.rancher.container.pull_image: always
+    command: php artisan queue:work
+
