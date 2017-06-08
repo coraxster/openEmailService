@@ -27,6 +27,10 @@ $app = new Laravel\Lumen\Application(
 
 // $app->withEloquent();
 
+$app->configure('database');
+$app->configure('queue');
+$app->configure('mail');
+
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
@@ -81,6 +85,8 @@ $app->singleton(
  $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+$app->register(Illuminate\Redis\RedisServiceProvider::class);
+$app->register(Illuminate\Mail\MailServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
