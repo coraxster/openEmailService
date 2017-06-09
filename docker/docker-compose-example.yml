@@ -1,16 +1,22 @@
 version: "2"
 
 volumes:
-  data-redis:
+  data_redis:
     driver: local
 
 
 services:
 
+
   code:
-    image: tianon/true
-    volumes: 
+    image: alpine
+    stdin_open: true
+    entrypoint:
+      - ash
+    volumes:
       - ../:/app
+
+
 
 #  Container for service
   workspace:
@@ -24,14 +30,12 @@ services:
       - code
     links:
       - web
-      - db
       - redis
     env_file:
       - base.env
     tty: true
     working_dir: /app
     command: sh -c "php artisan queue:restart && sh"
-
 
 
 
@@ -45,10 +49,10 @@ services:
     volumes_from:
       - code
     links:
-      - db
       - redis
     env_file:
       - base.env
+
 
 
 
@@ -69,7 +73,6 @@ services:
 
 
 
-
 # nginx
   web:
     build:
@@ -77,7 +80,7 @@ services:
     volumes_from:
       - code
     ports:
-      - 8080:80
+      - 80:80
     links:
       - php
     environment:
@@ -90,12 +93,27 @@ services:
 
 
 
-
-
   redis:
     image: redis
     volumes:
       - data_redis:/data
+
+
+
+
+  mailhog:
+    image: mailhog/mailhog
     ports:
-      - 6379
+      - 8080:8025
+
+
+
+
+
+
+
+
+
+
+
 
