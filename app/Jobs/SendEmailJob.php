@@ -46,4 +46,9 @@ class SendEmailJob extends Job
         Log::info('SendEmailJob done', [$from, $to, $title]);
 
     }
+
+    public function fail($exception = null)
+    {
+        Log::notice('SendEmailJob failed', ['exception' => $exception->getMessage() ?? null, $this->from, $this->to, $this->title]);
+    }
 }
