@@ -37,6 +37,8 @@ class RestTest extends TestCase
             'body' => $this->faker->text,
         ];
 
+        $this->expectsJobs(\App\Jobs\SendEmailJob::class);
+
         $this->json('POST', '/v1/send', $request_data)
             ->seeJson([
                 'status' => 'ok',
