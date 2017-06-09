@@ -88,6 +88,28 @@ $app->singleton(
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
 $app->register(Illuminate\Mail\MailServiceProvider::class);
 
+
+$app->configureMonologUsing(function($monolog) {
+
+    $syslogHandler = new \Monolog\Handler\SyslogHandler(
+        "email_service",
+        LOG_USER,
+        \Monolog\Logger::DEBUG,
+        true,
+        LOG_PID | LOG_PERROR
+    );
+    $monolog->pushHandler($syslogHandler);
+
+    $fileHandler = new \Monolog\Handler\StreamHandler(
+        storage_path('logs/lumen_email_' . date("Y.m.d") . '.log')
+    );
+    $monolog->pushHandler($fileHandler);
+
+    return $monolog;
+});
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
