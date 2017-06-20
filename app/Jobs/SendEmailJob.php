@@ -37,18 +37,18 @@ class SendEmailJob extends Job
 
         Log::info('SendEmailJob processing', [$from, $to, $title]);
 
-        Mail::send('email.blank', ['body' => $body], function ($message) use ($from, $to, $title) {
-            $message->from($from);
-            $message->to($to);
-            $message->subject($title);
-        });
+        try{
+            Mail::send('email.blank', ['body' => $body], function ($message) use ($from, $to, $title) {
+                $message->from($from);
+                $message->to($to);
+                $message->subject($title);
+            });
+        }catch (\Exception $exception){
+            Log::notice('SendEmailJob failed', ['exception' => $exception->getMessage() ?? null, $this->from, $this->to, $this->title]);
+            return;
+        }
 
         Log::info('SendEmailJob done', [$from, $to, $title]);
-
     }
 
-    public function fail($exception = null)
-    {
-        Log::notice('SendEmailJob failed', ['exception' => $exception->getMessage() ?? null, $this->from, $this->to, $this->title]);
-    }
 }
