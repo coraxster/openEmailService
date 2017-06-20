@@ -1,0 +1,21 @@
+FROM composer as build-env
+RUN mkdir -p /app
+WORKDIR /app
+ADD composer.* /app/
+ADD tests /app/tests
+ADD database /app/database
+RUN composer install
+
+FROM alpine
+RUN mkdir -p /app.orig
+RUN mkdir -p /app
+RUN apk update \
+    && apk --no-cache upgrade --clean-protected --force --quiet \
+    && apk --no-cache add rsync
+WORKDIR /app.orig
+ADD . .
+COPY --from=build-env /app /app.orig
+ARG BUILD
+RUN echo "Build versions: "$BUILD > /app.orig/versions
+VOLUME ["/app"]
+ENTRYPOINT rm -rf /app/* ; rsync -av /app.orig/ /app; ash

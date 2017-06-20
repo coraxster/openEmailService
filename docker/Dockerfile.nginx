@@ -1,0 +1,8 @@
+FROM nginx:alpine
+ADD web.conf /etc/nginx/conf.d/default.conf
+RUN mkdir -p /app
+WORKDIR /app
+RUN apk update -q \
+    && apk --no-cache upgrade --clean-protected --force --quiet \
+    && apk --no-cache add tzdata
+ENV TZ=Europe/Moscow
