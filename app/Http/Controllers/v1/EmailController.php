@@ -25,15 +25,16 @@ class EmailController extends Controller
     public function add(Request $request)
     {
         $this->validate($request, [
-            'email' => 'required|email',
+            'from' => 'required|email',
+            'to' => 'required|email',
             'title' => 'required|string',
             'body' => 'required|string',
         ]);
 
         $this->dispatch(
             new SendEmailJob(
-                'from@ya.ru',
-                    $request->get('email'),
+                    $request->get('from'),
+                    $request->get('to'),
                     $request->get('title'),
                     $request->get('body')
             )

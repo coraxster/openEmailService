@@ -32,7 +32,8 @@ class RestTest extends TestCase
 
 
         $request_data = [
-            'email' => $this->faker->email,
+            'from' => $this->faker->email,
+            'to' => $this->faker->email,
             'title' => $this->faker->title,
             'body' => $this->faker->text,
         ];
@@ -50,14 +51,16 @@ class RestTest extends TestCase
     public function testAddJobInvalidAttrs()
     {
         $request_data = [
-            'email' => 'not_valid*email+',
+            'from' => 'not_valid*email+',
+            'to' => 'not_valid*email+',
             'title' => '',
             'body' => false,
         ];
 
         $this->json('POST', '/v1/send', $request_data)
         ->seeJson([
-            'email' => ['The email must be a valid email address.'],
+            'from' => ['The email must be a valid email address.'],
+            'to' => ['The email must be a valid email address.'],
             'title' => ['The title field is required.'],
             'body' => ['The body must be a string.']
     ])

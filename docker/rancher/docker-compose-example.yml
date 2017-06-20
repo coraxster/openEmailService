@@ -3,7 +3,6 @@ version: "2"
 volumes:
   appemailgatecodedv:
     external: true
-    driver: 'rancher-nfs'
 
 services:
 
