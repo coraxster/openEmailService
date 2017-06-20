@@ -1,0 +1,111 @@
+version: '2'
+volumes:
+  appemailgatecode:
+    name: appemailgatecode-$TAG
+services:
+  workspace:
+    image: registry.open-broker.ru/email_service/php:$TAG
+    environment:
+      APP_DEBUG: $APP_DEBUG
+      APP_ENV: $APP_ENV
+      APP_KEY: $APP_KEY
+      APP_TIMEZONE: $APP_TIMEZONE
+      CACHE_DRIVER: $CACHE_DRIVER
+      MAIL_DRIVER: $MAIL_DRIVER
+      MAIL_ENCRYPTION: $MAIL_ENCRYPTION
+      MAIL_HOST: $MAIL_HOST
+      MAIL_PASSWORD: $MAIL_PASSWORD
+      MAIL_PORT: $MAIL_PORT
+      MAIL_USERNAME: $MAIL_USERNAME
+      QUEUE_DRIVER: $QUEUE_DRIVER
+      REDIS_HOST: $REDIS_HOST
+      REDIS_PORT: $REDIS_PORT
+    stdin_open: true
+    working_dir: /app
+    volumes:
+    - appemailgatecode-$TAG:/app
+    tty: true
+    command:
+    - sh
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.hostname_override:	container_name
+      io.rancher.scheduler.affinity:container_label: appemailgatecode=$TAG
+  code:
+    image: registry.open-broker.ru/email_service/code:$TAG
+    stdin_open: true
+    network_mode: none
+    volumes:
+    - appemailgatecode-$TAG:/app
+    tty: true
+    labels:
+      appemailgatecode: $TAG
+      io.rancher.container.pull_image: always
+      # io.rancher.scheduler.global: 'true'
+      # io.rancher.container.hostname_override:	container_name
+  worker-email-sender:
+    image: registry.open-broker.ru/email_service/php:$TAG
+    environment:
+      APP_DEBUG: $APP_DEBUG
+      APP_ENV: $APP_ENV
+      APP_KEY: $APP_KEY
+      APP_TIMEZONE: $APP_TIMEZONE
+      CACHE_DRIVER: $CACHE_DRIVER
+      MAIL_DRIVER: $MAIL_DRIVER
+      MAIL_ENCRYPTION: $MAIL_ENCRYPTION
+      MAIL_HOST: $MAIL_HOST
+      MAIL_PASSWORD: $MAIL_PASSWORD
+      MAIL_PORT: $MAIL_PORT
+      MAIL_USERNAME: $MAIL_USERNAME
+      QUEUE_DRIVER: $QUEUE_DRIVER
+      REDIS_HOST: $REDIS_HOST
+      REDIS_PORT: $REDIS_PORT
+    stdin_open: true
+    working_dir: /app
+    volumes:
+    - appemailgatecode-$TAG:/app
+    tty: true
+    command:
+    - php
+    - artisan
+    - queue:work
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.hostname_override:	container_name
+      io.rancher.scheduler.affinity:container_label: appemailgatecode=$TAG
+  web:
+    image: registry.open-broker.ru/email_service/nginx:$TAG
+    stdin_open: true
+    volumes:
+    - appemailgatecode-$TAG:/app
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.sidekicks: php
+      io.rancher.scheduler.affinity:container_label: appemailgatecode=$TAG
+  php:
+    image: registry.open-broker.ru/email_service/php:$TAG
+    environment:
+      APP_DEBUG: $APP_DEBUG
+      APP_ENV: $APP_ENV
+      APP_KEY: $APP_KEY
+      APP_TIMEZONE: $APP_TIMEZONE
+      CACHE_DRIVER: $CACHE_DRIVER
+      MAIL_DRIVER: $MAIL_DRIVER
+      MAIL_ENCRYPTION: $MAIL_ENCRYPTION
+      MAIL_HOST: $MAIL_HOST
+      MAIL_PASSWORD: $MAIL_PASSWORD
+      MAIL_PORT: $MAIL_PORT
+      MAIL_USERNAME: $MAIL_USERNAME
+      QUEUE_DRIVER: $QUEUE_DRIVER
+      REDIS_HOST: $REDIS_HOST
+      REDIS_PORT: $REDIS_PORT
+    stdin_open: true
+    network_mode: container:web
+    volumes:
+    - appemailgatecode-$TAG:/app
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.hostname_override:	container_name
+      io.rancher.scheduler.affinity:container_label: appemailgatecode=$TAG

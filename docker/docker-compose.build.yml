@@ -1,0 +1,19 @@
+version: '3'
+services:
+  code:
+    build:
+      context: ../
+      args:
+        BUILD: $BUILD
+      dockerfile: docker/Dockerfile.code
+    image: registry.open-broker.ru/email_service/code:$TAG
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    image: registry.open-broker.ru/email_service/nginx:$TAG
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile.fpm
+    image: registry.open-broker.ru/email_service/php:$TAG
