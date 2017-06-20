@@ -91,19 +91,9 @@ $app->register(Illuminate\Mail\MailServiceProvider::class);
 
 $app->configureMonologUsing(function($monolog) {
 
-    $syslogHandler = new \Monolog\Handler\SyslogHandler(
-        "email_service",
-        LOG_USER,
-        \Monolog\Logger::DEBUG,
-        true,
-        LOG_PID | LOG_PERROR
+    $monolog->pushHandler(
+        new \Monolog\Handler\StreamHandler('php://stdout', \Monolog\Logger::INFO)
     );
-    $monolog->pushHandler($syslogHandler);
-
-    $fileHandler = new \Monolog\Handler\StreamHandler(
-        storage_path('logs/lumen_email_' . date("Y.m.d") . '.log')
-    );
-    $monolog->pushHandler($fileHandler);
 
     return $monolog;
 });
