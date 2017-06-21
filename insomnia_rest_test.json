@@ -1,0 +1,88 @@
+{
+	"_type": "export",
+	"__export_format": 3,
+	"__export_date": "2017-06-21T07:51:01.846Z",
+	"__export_source": "insomnia.desktop.app:v5.1.1",
+	"resources": [
+		{
+			"_id": "wrk_3bba3e1dc2f04651a544c84f2618f5b4",
+			"parentId": null,
+			"modified": 1497961071494,
+			"created": 1497961071494,
+			"name": "OpenEmailService",
+			"description": "",
+			"certificates": [],
+			"_type": "workspace"
+		},
+		{
+			"_id": "env_c3b750f864ae40a3a3712553d00a67d3",
+			"parentId": "wrk_3bba3e1dc2f04651a544c84f2618f5b4",
+			"modified": 1497965921132,
+			"created": 1497961128613,
+			"name": "1",
+			"data": {
+				"host": "https://emailgate-dv.open-broker.ru"
+			},
+			"_type": "environment"
+		},
+		{
+			"_id": "jar_4bcbbaf4b7ec4846aa2cd940e9b29ef9",
+			"parentId": "wrk_3bba3e1dc2f04651a544c84f2618f5b4",
+			"modified": 1497961203895,
+			"created": 1497961203895,
+			"name": "Default Jar",
+			"cookies": [],
+			"_type": "cookie_jar"
+		},
+		{
+			"_id": "req_706eb8ccf86d42d9a116e03148c88acd",
+			"parentId": "wrk_3bba3e1dc2f04651a544c84f2618f5b4",
+			"modified": 1498031403272,
+			"created": 1497961128305,
+			"url": "{{ host }}/v1/send",
+			"name": "send",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"from\" : \"no-reply@open-broker.ru\",\n\t\"to\" : \"serge.zubtsov@gmail.com\",\n\t\"title\" : \"test email\",\n\t\"body\" : \"body <b>Bold</b>\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json",
+					"id": "pair_3aa9ff7cb64d4efdafbc4bc799d1f2b4"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1497961128305,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"_type": "request"
+		},
+		{
+			"_id": "env_7d7bacb87527465fa80970cbba6225d4",
+			"parentId": "env_c3b750f864ae40a3a3712553d00a67d3",
+			"modified": 1497965909259,
+			"created": 1497965850020,
+			"name": "local",
+			"data": {
+				"host": "http://sms.in"
+			},
+			"_type": "environment"
+		},
+		{
+			"_id": "env_108b31e7c3b54213ba69eb36cab489b0",
+			"parentId": "env_c3b750f864ae40a3a3712553d00a67d3",
+			"modified": 1497965926157,
+			"created": 1497965913927,
+			"name": "Dev",
+			"data": {
+				"host": "https://emailgate-dv.open-broker.ru"
+			},
+			"_type": "environment"
+		}
+	]
+}
