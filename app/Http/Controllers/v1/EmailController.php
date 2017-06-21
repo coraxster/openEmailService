@@ -30,18 +30,19 @@ class EmailController extends Controller
             'title' => 'required|string',
             'body' => 'required|string',
         ]);
-
+        $guid = $this->com_create_guid();
         $this->dispatch(
             new SendEmailJob(
                     $request->get('from'),
                     $request->get('to'),
                     $request->get('title'),
-                    $request->get('body')
+                    $request->get('body'),
+                    $guid
             )
         );
 
 
-        return ['status' => 'ok'];
+        return ['status' => 'ok', 'guid' => $guid];
 
     }
 
@@ -53,6 +54,12 @@ class EmailController extends Controller
             'config' => config()->all(),
             'env' => getenv()
         ];
+    }
+
+
+    protected function com_create_guid()
+    {
+        return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
     }
 
 }

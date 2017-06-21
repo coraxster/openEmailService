@@ -12,14 +12,16 @@ class SendEmailJob extends Job
     protected $to;
     protected $title;
     protected $body;
+    protected $guid;
 
-    public function __construct($from, $to, $title, $body)
+    public function __construct($from, $to, $title, $body, $guid)
     {
         $this->from = $from;
         $this->to = $to;
         $this->title = $title;
         $this->body = $body;
-        Log::info('SendEmailJob created', [$from, $to, $title, $body]);
+        $this->guid = $guid;
+        Log::info('SendEmailJob created', [$guid, $from, $to, $title, $body]);
     }
 
     /**
@@ -35,7 +37,7 @@ class SendEmailJob extends Job
         $title = $this->title;
         $body = $this->body;
 
-        Log::info('SendEmailJob processing', [$from, $to, $title]);
+        Log::info('SendEmailJob processing', [$this->guid, $from, $to, $title]);
 
         try{
             Mail::send('email.blank', ['body' => $body], function ($message) use ($from, $to, $title) {
@@ -44,11 +46,11 @@ class SendEmailJob extends Job
                 $message->subject($title);
             });
         }catch (\Exception $exception){
-            Log::notice('SendEmailJob failed', ['exception' => $exception->getMessage() ?? null, $this->from, $this->to, $this->title]);
+            Log::notice('SendEmailJob failed', [$this->guid, 'exception' => $exception->getMessage() ?? null, $this->from, $this->to, $this->title]);
             return;
         }
 
-        Log::info('SendEmailJob done', [$from, $to, $title]);
+        Log::info('SendEmailJob done', [$this->guid, $from, $to, $title]);
     }
 
 }

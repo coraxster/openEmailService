@@ -30,7 +30,7 @@ class SendEmailJobTest extends TestCase
         $title = $this->faker->title;
         $body = $this->faker->paragraph;
 
-        $job = new \App\Jobs\SendEmailJob($from, $to, $title, $body);
+        $job = new \App\Jobs\SendEmailJob($from, $to, $title, $body, 'string');
 
 
         Mail::shouldReceive('send')
